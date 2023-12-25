@@ -8,7 +8,8 @@
                         <form [formGroup]="clientForm" class="form-group row">
                             <mat-form-field class="col-6">
                                 <mat-label for="documentNumber">Cédula:</mat-label>
-                                <input matInput id="documentNumber" type="text" class="form-control" formControlName="documentNumber">
+                                <input matInput id="documentNumber" type="text" class="form-control" 
+                                    formControlName="documentNumber"  (blur)="changeDocNumber()">
                                 <div *ngIf="validateClientFormField('documentNumber')" class="text-danger">
                                     <small>Cédula es requerido</small>
                                 </div>

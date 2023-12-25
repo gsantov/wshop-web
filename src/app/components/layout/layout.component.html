@@ -7,7 +7,7 @@
             <mat-icon style="vertical-align: middle;" title="Ver carrito">shopping_cart</mat-icon>
         </div>
     </button>
-    <button mat-button 
+    <button mat-button *ngIf="this.loginService.getCurrentRole() === 'ADMIN'"
         (click)="getReport()" 
         class="example-icon" title="Ingresar">
         <!-- <mat-icon>login</mat-icon>  -->

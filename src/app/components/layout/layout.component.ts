@@ -21,7 +21,10 @@ import { saveAs } from 'file-saver';
 export class LayoutComponent {
 
   constructor(public loginService: LoginService, public cartService:CartService,
-    private router: Router, private reportService:ReportsService){}
+    private router: Router, private reportService:ReportsService){
+      console.log("loginService.role", loginService.role);
+      
+    }
 
   goToCart(){
     this.router.navigate(['/cart']);

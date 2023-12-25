@@ -27,12 +27,20 @@ import { OrdersService } from './services/orders.service';
   templateUrl: './cart.component.html',
   styleUrl: './cart.component.css'
 })
-export class CartComponent {
+export class CartComponent implements OnInit{
 
   constructor(private cartService: CartService, private router: Router,
     public dialog: MatDialog, private _snackBar: MatSnackBar,
     private personService:PersonService, private providerService:ProvidersService,
     private ordersService:OrdersService) { }
+
+  async ngOnInit() {
+    let request = await lastValueFrom(this.personService.getAllClients());
+    this.allClients = request.data;
+
+    let providerRequest = await lastValueFrom(this.providerService.getAll());
+    this.allProviders = providerRequest.data;
+  }
 
   client?: ClientModel;
   displayedColumns: string[] = ['shop', 'name', 'quantity', 'unitCost', 'totalCost', 'actions'];
@@ -43,7 +51,8 @@ export class CartComponent {
   total?: number;
   @ViewChild(MatTable) table?: MatTable<ShopProductModel>;
   snackDuration = 3;
-
+  allClients:Array<ClientModel> = [];
+  allProviders:Array<any> = [];
 
   clientForm = new FormGroup({
     documentNumber: new FormControl('', Validators.required),
@@ -149,7 +158,31 @@ export class CartComponent {
       verticalPosition: 'top',
       panelClass: 'snack_success'
     });
+    this.shopProductList = [];
+    this.cartService._cartItems = [];
 
+
+  }
+
+  changeDocNumber(){
+    console.log("cahnge", this.clientForm.value.documentNumber);
+    let foundClient = this.allClients.find(client => client.documentNumber == this.clientForm.value.documentNumber)
+    if(foundClient){
+      this.clientForm.patchValue({
+        documentNumber: foundClient?.documentNumber,
+        name: foundClient?.name,
+        email: foundClient?.email
+      })
+    }
+    
+  }
+
+  changeRuc(){
+    let foundProvider = this.allProviders.find(provider => provider.documentNumber == this.providerForm.value.documentNumber)
+    this.providerForm.patchValue({
+      documentNumber: foundProvider?.documentNumber,
+      name: foundProvider?.name
+    })
   }
 
 }

@@ -35,8 +35,11 @@ export class LoginComponent {
       return;
     }
     await this.loginService.login(this.loginForm.value.userName!, this.loginForm.value.password!)
-    .then(()=> {
+    .then((role)=> {
       localStorage.setItem('loggedIn','1');
+      console.log("role", role.data);
+      
+      localStorage.setItem('role',role.data);
       this.loginService.isLoggedIn = true;
       if (this.loginService.nextRoute) {
         this.router.navigate([this.loginService.nextRoute!.path]);
@@ -48,9 +51,11 @@ export class LoginComponent {
       this._snackBar.open("Usuario o contraseña incorrectos", undefined, {
         duration: 3000,
         horizontalPosition: 'end',
-        verticalPosition: 'top'
+        verticalPosition: 'top',
+        panelClass: 'snack_error'
       });
       localStorage.setItem('loggedIn','0');
+      localStorage.setItem('role', '');
     })
     
   }

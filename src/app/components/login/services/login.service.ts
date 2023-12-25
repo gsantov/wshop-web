@@ -10,11 +10,16 @@ export class LoginService {
 
   isLoggedIn = false;
   nextRoute?: Route;
+  role?:string;
 
   constructor(private router: Router, private httpClient: HttpClient) { }
 
   isAuthenticated() {
     return localStorage.getItem('loggedIn') === '1';
+  }
+
+  getCurrentRole(){
+    return localStorage.getItem('role');
   }
 
   login(userName: string, password: string): Promise<any> {
@@ -26,7 +31,9 @@ export class LoginService {
 
   logout() {
     localStorage.setItem('loggedIn', '0');
+    localStorage.setItem('role', '');
     this.isLoggedIn = false;
+    this.router.navigate(['/login']);
   }
 
   getAllClients(): Observable<any> {

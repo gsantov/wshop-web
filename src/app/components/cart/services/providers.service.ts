@@ -15,4 +15,8 @@ export class ProvidersService {
       name: name
     });
   }
+
+  getAll():Observable<any>{
+    return this.httpClient.get("/api/v1/providers");
+  }
 }

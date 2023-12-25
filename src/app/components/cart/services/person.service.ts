@@ -18,4 +18,8 @@ export class PersonService {
     });
   }
 
+  getAllClients():Observable<any>{
+    return this.httpClient.get("/api/v1/client");
+  }
+
 }
