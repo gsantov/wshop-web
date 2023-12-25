@@ -34,7 +34,8 @@
                         <form [formGroup]="providerForm" class="form-group row">
                             <mat-form-field class="col-12">
                                 <mat-label for="documentNumber">RUC:</mat-label>
-                                <input matInput id="documentNumber" type="text" class="form-control" formControlName="documentNumber">
+                                <input matInput id="documentNumber" type="text" class="form-control" 
+                                (blur)="changeRuc()" formControlName="documentNumber">
                                 <div *ngIf="validateClientFormField('documentNumber')" class="text-danger">
                                     <small>RUC es requerido</small>
                                 </div>

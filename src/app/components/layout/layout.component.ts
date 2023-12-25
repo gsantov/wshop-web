@@ -9,19 +9,22 @@ import { CartService } from '../cart/services/cart.service';
 import { LoginService } from '../login/services/login.service';
 import { ReportsService } from '../cart/services/reports.service';
 import { saveAs } from 'file-saver';
+import {MatTooltipModule} from '@angular/material/tooltip';
+import { MatSnackBar } from '@angular/material/snack-bar';
+
 
 @Component({
   selector: 'app-layout',
   standalone: true,
   imports: [CommonModule, RouterOutlet, MatToolbarModule, MatButtonModule, MatIconModule,
-    MatBadgeModule],
+    MatBadgeModule, MatTooltipModule],
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.css'
 })
 export class LayoutComponent {
 
   constructor(public loginService: LoginService, public cartService:CartService,
-    private router: Router, private reportService:ReportsService){
+    private router: Router, private reportService:ReportsService,private _snackBar: MatSnackBar){
       console.log("loginService.role", loginService.role);
       
     }
@@ -39,6 +42,15 @@ export class LayoutComponent {
   }
 
   async getReport(){
+    if(this.loginService.getCurrentRole() != 'ADMIN'){
+      this._snackBar.open("El reporte puede ser descargado unicamente por un administrador", undefined, {
+        duration: 3000,
+        horizontalPosition: 'end',
+        verticalPosition: 'top',
+        panelClass: 'snack_error'
+      });
+      return;
+    }
     this.reportService.getOrdersReport().subscribe(
       (blob) => saveAs(blob, 'file.pdf'),
       (error) => {

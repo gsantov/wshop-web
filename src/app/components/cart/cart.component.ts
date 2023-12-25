@@ -39,6 +39,8 @@ export class CartComponent implements OnInit{
     this.allClients = request.data;
 
     let providerRequest = await lastValueFrom(this.providerService.getAll());
+    console.log("providerRequest", providerRequest);
+    
     this.allProviders = providerRequest.data;
   }
 
@@ -179,10 +181,13 @@ export class CartComponent implements OnInit{
 
   changeRuc(){
     let foundProvider = this.allProviders.find(provider => provider.documentNumber == this.providerForm.value.documentNumber)
-    this.providerForm.patchValue({
-      documentNumber: foundProvider?.documentNumber,
-      name: foundProvider?.name
-    })
+    if(foundProvider){
+      this.providerForm.patchValue({
+        documentNumber: foundProvider?.documentNumber,
+        name: foundProvider?.name
+      })
+    }
+    
   }
 
 }
