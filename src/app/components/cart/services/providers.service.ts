@@ -5,11 +5,14 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class ShopService {
+export class ProvidersService {
 
   constructor(private httpClient: HttpClient) { }
 
-  getAllShops():Observable<any> {
-    return this.httpClient.get("/api/v1/shop");
+  createProvider(documentNumber:string, name:string):Observable<any>{
+    return this.httpClient.post("/api/v1/providers", {
+      documentNumber:documentNumber,
+      name: name
+    });
   }
 }

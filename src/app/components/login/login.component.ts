@@ -3,11 +3,13 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { ReactiveFormsModule, FormControl, FormGroup, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import {MatInputModule} from '@angular/material/input';
+import { MatInputModule } from '@angular/material/input';
 import { CartService } from '../cart/services/cart.service';
 import { LoginService } from './services/login.service';
 import { lastValueFrom } from 'rxjs';
 import { Router } from '@angular/router';
+import { CookieService } from 'ngx-cookie-service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-login',
@@ -23,29 +25,38 @@ export class LoginComponent {
     password: new FormControl('', Validators.required),
   });
 
-  constructor(private loginService:LoginService, private cartService:CartService,
-    private router: Router){
-    console.log("cartService", cartService._cartItems);
+  constructor(private loginService: LoginService, private cartService: CartService,
+    private router: Router, private cookieService:CookieService,
+    private _snackBar: MatSnackBar) {
+  }
+
+  async doLogin() {
+    if (!this.loginForm.valid) {
+      return;
+    }
+    await this.loginService.login(this.loginForm.value.userName!, this.loginForm.value.password!)
+    .then(()=> {
+      localStorage.setItem('loggedIn','1');
+      this.loginService.isLoggedIn = true;
+      if (this.loginService.nextRoute) {
+        this.router.navigate([this.loginService.nextRoute!.path]);
+      } else {
+        this.router.navigate(['/cart']);
+      }
+    })
+    .catch(()=>{
+      this._snackBar.open("Usuario o contraseña incorrectos", undefined, {
+        duration: 3000,
+        horizontalPosition: 'end',
+        verticalPosition: 'top'
+      });
+      localStorage.setItem('loggedIn','0');
+    })
     
   }
 
-  async doLogin(){
-    if(!this.loginForm.valid){
-      return;
-    }
-    this.loginService.isLoggedIn = await this.loginService
-      .login(this.loginForm.value.userName!, this.loginForm.value.password!)
-      console.log("this.loginService.isLoggedIn", this.loginService.isLoggedIn);
-      
-      if(this.loginService.isLoggedIn) {
-        this.router.navigate(['/cart']);
-      } else {
-        // Show error
-      }
-  }
-
-  validateFormField(field:string) {
-    return this.loginForm.get(field)?.errors && 
+  validateFormField(field: string) {
+    return this.loginForm.get(field)?.errors &&
       (this.loginForm.get(field)?.dirty || this.loginForm.get(field)?.touched)
   }
 

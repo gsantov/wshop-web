@@ -12,13 +12,14 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {FormsModule} from '@angular/forms';
 import { CartService } from '../cart/services/cart.service';
-
+import {MatDialog, MatDialogModule} from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-shop',
   standalone: true,
   imports: [CommonModule, HttpClientModule, MatGridListModule, MatTableModule, MatButtonModule,
-    MatFormFieldModule, MatInputModule, FormsModule],
+    MatFormFieldModule, MatInputModule, FormsModule, MatDialogModule],
   templateUrl: './shop.component.html',
   styleUrl: './shop.component.css'
 })
@@ -28,9 +29,11 @@ export class ShopComponent implements OnInit {
   cols:number = 4;
   shopProductList: Array<ShopProductModel> = [];
   displayedColumns: string[] = ['name', 'cost', 'actions'];
+  selectedShop?:ShopModel;
+  snackDuration = 3;
 
-
-  constructor(private shopService:ShopService, private cartService:CartService){
+  constructor(private shopService:ShopService, private cartService:CartService,
+    private _snackBar: MatSnackBar){
 
   }
 
@@ -48,18 +51,23 @@ export class ShopComponent implements OnInit {
     }
   }
 
-  showShopProducts(shopId:number){
-    this.shopProductList = this.shopList!.find(shop => shop.id === shopId)!.productsList!;
+  showShopProducts(selSshop:ShopModel){
+    this.selectedShop = selSshop;
+    this.shopProductList = this.shopList!.find(shop => shop.id === selSshop.id)!.productsList!;
     // this.shopProductList.forEach(product => product.quantity = 0)
   }
   
   addProduct(product:ShopProductModel){
-    console.log("product", product);
-    
     if(product.quantity == undefined || product.quantity === 0){
       // show alert
+      this._snackBar.open("Favor ingrese una cantidad", undefined, {
+        duration: this.snackDuration * 1000,
+        horizontalPosition: 'end',
+        verticalPosition: 'top',
+        panelClass: 'snack_error'
+      });
     } else {
-      this.cartService.addProduct(product);  
+      this.cartService.addProduct(this.selectedShop!, product);  
     }
     product.quantity = undefined;
     

@@ -5,11 +5,11 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class ShopService {
+export class ReportsService {
 
   constructor(private httpClient: HttpClient) { }
 
-  getAllShops():Observable<any> {
-    return this.httpClient.get("/api/v1/shop");
+  getOrdersReport():Observable<any>{
+    return this.httpClient.get("/api/v1/reports/item-report/pdf");
   }
 }

@@ -9,34 +9,28 @@ import { Observable } from 'rxjs';
 export class LoginService {
 
   isLoggedIn = false;
-  nextRoute?:Route;
+  nextRoute?: Route;
 
   constructor(private router: Router, private httpClient: HttpClient) { }
 
   isAuthenticated() {
-    return this.isLoggedIn;
+    return localStorage.getItem('loggedIn') === '1';
   }
 
-  login(userName:string, password:string):Promise<any>{
-    // console.log("nextRoute", this.nextRoute);
+  login(userName: string, password: string): Promise<any> {
+    var headers = {
+      authorization: "Basic " + btoa(userName + ":" + password)};
 
-    return this.httpClient.post("http://localhost:8080/api/v1/login", 
-      {userName: userName, password: password}).toPromise();
-    
-    
-    // this.isLoggedIn = true;    
-    // this.router.navigate([this.nextRoute!.path]);
+    return this.httpClient.post("/api/v1/login/user", {userName: userName}, {headers : headers}).toPromise();
   }
 
-  logout(){
-    this.isLoggedIn = true;
+  logout() {
+    localStorage.setItem('loggedIn', '0');
+    this.isLoggedIn = false;
   }
 
-
-
-
-  getAllClients():Observable<any> {
-    return this.httpClient.get("http://localhost:8080/api/v1/client");
+  getAllClients(): Observable<any> {
+    return this.httpClient.get("/api/v1/client");
   }
 
 }

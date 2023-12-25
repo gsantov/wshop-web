@@ -16,7 +16,7 @@ export const routes: Routes = [
         component: LayoutComponent,
         children: [
           { path: 'cart', component: CartComponent, canActivate:[AuthGuard] },
-          { path: 'shop', component: ShopComponent },
+        //   { path: 'shop', component: ShopComponent },
         //   { path: 'forbidden', component: ForbiddenComponent },
         ]
     }

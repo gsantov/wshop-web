@@ -3,7 +3,9 @@ export class ShopProductModel{
     name?:string;
     cost?:number;
     stock?:number;
+
     quantity?:number;
+    // unitCost?:number;
     
     
 }
